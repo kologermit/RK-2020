@@ -14,6 +14,7 @@ start_kub =
 robot_position = 3
 True = "True"
 False = "False"
+CR = 0 'Переменная для функции по езду по перекрёсткам
 
 'Езда по линии
 Sub Line
@@ -38,9 +39,39 @@ EndSub
 Sub Zahvat
 EndSub
 
+'Повороты
+Sub Rotate_hour_90
+EndSub
+
+Sub Rotate_hour_180
+EndSub
+
+Sub Rotate_not_hour_90
+EndSub
+
+Sub Rotate_not_hour_180
+EndSub
+
 'Езда по перекрёсткам
 Sub Cross_ride
-
+  If robot_position = CR Then
+  ElseIf robot_position < CR Then
+    While robot_position < CR
+      While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
+        Line()
+      EndWhile
+      robot_position = robot_position + 1
+    EndWhile
+  Else
+    Rotate_hour_180()
+    While robot_position > CR
+      While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
+        Line()
+      EndWhile
+      robot_position = robot_position - 1
+    EndWhile
+    Rotate_hour_180()
+  EndIf
 EndSub
 
 'Основная программа
@@ -53,7 +84,7 @@ Motor.Move(BC, speed, 100, True)
 
 'Сканирование кубиков и нахождение первого
 For i = 0 To 2
-  While Sensor.ReadPercent(3) > 50 Or Sensor.ReadPercent(2) > 50
+  While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
     Line()
   EndWhile
   Motor.Stop(A, True)
@@ -66,7 +97,7 @@ For i = 0 To 2
   EndIf
   If right[i] = Then
     start_position[0] = "right"
-    start_position[1] = t
+    start_position[1] = i
   EndIf
 EndFor
 LCD.Clear()
@@ -78,7 +109,13 @@ For i = 0 To 2
 EndFor
 
 'Подъезд к первому кубику 
-
+CR = start_position[1]
+Cross_ride()
+If start_position[0] = "left" Then
+  Rotate_not_hour_90()
+Else
+  Rotate_hour_90()
+EndIf
 
 While True
 EndWhile
