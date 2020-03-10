@@ -4,6 +4,12 @@ B = "B"
 C = "C"
 A = "A"
 grey = 15
+GREEN = 3
+RED = 5
+BLUE = 2
+YELLOW = 4 
+NONE = 0
+start_kub = 
 Sub LINE
   If Sensor.ReadPercent(2) > grey Then
     If Sensor.ReadPercent(3) > grey Then
@@ -36,13 +42,12 @@ For i = 0 To 2
   KUB[5 - i]  = Sensor.ReadRawValue(4, 0)
 EndFor
   
-  LCD.Clear()
-  For i = 0 To 2
-    LCD.Write(i * 30, 0, KUB[i])
-  EndFor
-  For i = 3 To 5
-    LCD.Write((i - 3) * 30, 10, KUB[i])
-  EndFor
-  While True
-  EndWhile
-  
+LCD.Clear()
+For i = 0 To 2
+  LCD.Write(i * 30, 0, KUB[i])
+EndFor
+For i = 3 To 5
+  LCD.Write((i - 3) * 30, 10, KUB[i])
+EndFor
+While True
+EndWhile
