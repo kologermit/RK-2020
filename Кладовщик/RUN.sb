@@ -1,3 +1,4 @@
+'Основные переменные
 speed = 30
 BC = "BC"
 B = "B"
@@ -10,7 +11,12 @@ BLUE = 2
 YELLOW = 4 
 NONE = 0
 start_kub = 
-Sub LINE
+robot_position = 3
+True = "True"
+False = "False"
+
+'Езда по линии
+Sub Line
   If Sensor.ReadPercent(2) > grey Then
     If Sensor.ReadPercent(3) > grey Then
       Motor.Start(BC, speed)
@@ -27,27 +33,52 @@ Sub LINE
     EndIf
   EndIf
 EndSub
-True = "True"
-False = "False"
+
+'Захват кубика из зовы и выгрузка
+Sub Zahvat
+EndSub
+
+'Езда по перекрёсткам
+Sub Cross_ride
+
+EndSub
+
 'Основная программа
+
+
+
+'Выезд из старта
 Motor.Start(A, 10)
 Motor.Move(BC, speed, 100, True)
+
+'Сканирование кубиков и нахождение первого
 For i = 0 To 2
   While Sensor.ReadPercent(3) > 50 Or Sensor.ReadPercent(2) > 50
-    LINE()
+    Line()
   EndWhile
   Motor.Stop(A, True)
   Motor.Move(BC, speed, 40, True)
-  KUB[i] = Sensor.ReadRawValue(1, 0)
-  KUB[5 - i]  = Sensor.ReadRawValue(4, 0)
+  right[i] = Sensor.ReadRawValue(1, 0)
+  left[i]  = Sensor.ReadRawValue(4, 0)
+  If left[i] = start_kub Then
+    start_position[0] = "left"
+    start_position[1] = i
+  EndIf
+  If right[i] = Then
+    start_position[0] = "right"
+    start_position[1] = t
+  EndIf
 EndFor
-  
 LCD.Clear()
 For i = 0 To 2
-  LCD.Write(i * 30, 0, KUB[i])
+  LCD.Write(i * 30, 0, right[i])
 EndFor
-For i = 3 To 5
-  LCD.Write((i - 3) * 30, 10, KUB[i])
+For i = 0 To 2
+  LCD.Write(i * 30, 10, left[i])
 EndFor
+
+'Подъезд к первому кубику 
+
+
 While True
 EndWhile
