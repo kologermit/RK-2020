@@ -5,38 +5,52 @@ B = "B"
 C = "C"
 A = "A"
 grey = 15
-GREEN = 3
-RED = 5
-BLUE = 2
-YELLOW = 4 
-NONE = 0
+Green = 3
+Red = 5
+Blue = 2
+Yellow = 4 
+None = 0
 start_kub = 
 robot_position = 3
 True = "True"
 False = "False"
+True_position[0][0] = "right"
+True_position[0][1] = Green
+True_position[1][0] = "right"
+True_position[1][1] = Red
+True_position[2][0] = "right"
+True_position[2][1] = Blue
+True_position[3][0] = "left"
+True_position[3][1] = Red
+True_position[4][0] = "left"
+True_potinion[4][1] = Yellow
+True_position[5][0] = "left"
+True_position[5][1] = Green
 CR = 0 'Переменная для функции по езду по перекрёсткам
 
 'Езда по линии
 Sub Line
-  If Sensor.ReadPercent(2) > grey Then
-    If Sensor.ReadPercent(3) > grey Then
-      Motor.Start(BC, speed)
+  While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
+    If Sensor.ReadPercent(2) > grey Then
+      If Sensor.ReadPercent(3) > grey Then
+        Motor.Start(BC, speed)
+      Else
+        Motor.Start(B, speed)
+        Motor.Start(C, 0)
+      EndIf
     Else
-      Motor.Start(B, speed)
-      Motor.Start(C, 0)
+      If Sensor.ReadPercent(3) > grey Then
+        Motor.Start(B, 0)
+        Motor.Start(C, speed)
+      Else
+        Motor.Start(BC, speed)
+      EndIf
     EndIf
-  Else
-    If Sensor.ReadPercent(3) > grey Then
-      Motor.Start(B, 0)
-      Motor.Start(C, speed)
-    Else
-      Motor.Start(BC, speed)
-    EndIf
-  EndIf
+  EndWhile
 EndSub
 
 'Захват кубика из зовы и выгрузка
-Sub Zahvat
+Sub Kub
 EndSub
 
 'Повороты
@@ -57,17 +71,13 @@ Sub Cross_ride
   If robot_position = CR Then
   ElseIf robot_position < CR Then
     While robot_position < CR
-      While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
-        Line()
-      EndWhile
+      Line()
       robot_position = robot_position + 1
     EndWhile
   Else
     Rotate_hour_180()
     While robot_position > CR
-      While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
-        Line()
-      EndWhile
+      Line()
       robot_position = robot_position - 1
     EndWhile
     Rotate_hour_180()
@@ -84,9 +94,7 @@ Motor.Move(BC, speed, 100, True)
 
 'Сканирование кубиков и нахождение первого
 For i = 0 To 2
-  While Sensor.ReadPercent(3) > grey Or Sensor.ReadPercent(2) > grey
-    Line()
-  EndWhile
+  Line()
   Motor.Stop(A, True)
   Motor.Move(BC, speed, 40, True)
   right[i] = Sensor.ReadRawValue(1, 0)
@@ -108,7 +116,7 @@ For i = 0 To 2
   LCD.Write(i * 30, 10, left[i])
 EndFor
 
-'Подъезд к первому кубику 
+'Подъезд к первому кубику и его захват
 CR = start_position[1]
 Cross_ride()
 If start_position[0] = "left" Then
@@ -116,6 +124,19 @@ If start_position[0] = "left" Then
 Else
   Rotate_hour_90()
 EndIf
+Kub()
+Line()
+Rotate_not_hour_90()
+
+'Провоз до правильного места
+For i = 0 To 5
+  If True_position[i][1] = start_kub Then
+    CR = i % 3
+    
+  EndIf
+EndFor
+Cross_ride()
+If()
 
 While True
 EndWhile
